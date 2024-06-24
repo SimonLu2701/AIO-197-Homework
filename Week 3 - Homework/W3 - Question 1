@@ -1,0 +1,39 @@
+# Question 1
+
+
+import torch  # type: ignore
+import torch.nn as nn  # type: ignore
+
+
+class MySoftmax(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        x_exp = torch.exp(x)
+        partition = x_exp.sum(0, keepdims=True)
+        return x_exp / partition
+
+
+data_1 = torch.Tensor([5, 2, 4])
+my_softmax = MySoftmax()
+output_softmax = my_softmax(data_1)
+
+
+class SoftmaxStable(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, x):
+        x_max = torch.max(x, dim=0, keepdims=True)
+        x_exp = torch.exp(x - x_max.values)
+        partition = x_exp.sum(0, keepdims=True)
+        return x_exp / partition
+
+
+data_2 = torch.Tensor([1, 2, 3])
+softmax_stable = SoftmaxStable()
+output_softmax_stable = softmax_stable(data_2)
+
+print("Output Softmax: ", output_softmax)
+print("Output Softmax Stable: ", output_softmax_stable)
